@@ -1,8 +1,8 @@
-# 🎯 Monitoring Lab
+# Monitoring Lab
 
 Laboratório completo de monitoramento com aplicações Go e Spring Boot conectadas ao MongoDB, expondo métricas para Prometheus e visualização no Grafana.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 /monitoring-lab
@@ -22,7 +22,7 @@ Laboratório completo de monitoramento com aplicações Go e Spring Boot conecta
     README.md
 ```
 
-## 🚀 Como Executar
+## Como Executar
 
 ### Pré-requisitos
 
@@ -52,7 +52,7 @@ Para remover também os volumes (dados):
 docker-compose down -v
 ```
 
-## 🌐 Acessos
+## Acessos
 
 ### Aplicações
 
@@ -66,7 +66,7 @@ docker-compose down -v
   - Usuário: `admin`
   - Senha: `admin`
 
-## 📊 Métricas Expostas
+## Métricas Expostas
 
 ### Go App (`/metrics`)
 
@@ -88,7 +88,7 @@ docker-compose down -v
 
 - Métricas do sistema (CPU, memória, disco, rede, etc.)
 
-## 📈 Visualizando Métricas
+## Visualizando Métricas
 
 ### No Prometheus
 
@@ -139,7 +139,7 @@ mongodb_total_operations
 mongodb_operation_latency_seconds
 ```
 
-## 🔧 Configurações
+## Configurações
 
 ### Variáveis de Ambiente
 
@@ -155,38 +155,38 @@ O arquivo `prometheus/prometheus.yml` configura:
 - Intervalo de scrape: 5 segundos
 - Targets: go-app, spring-app, mongodb-exporter, node-exporter
 
-## 📝 Funcionalidades
+## Funcionalidades
 
 ### Go App
 
-- ✅ Conecta ao MongoDB usando mongo-driver
-- ✅ Loop infinito em goroutine executando a cada 5 segundos:
+- Conecta ao MongoDB usando mongo-driver
+- Loop infinito em goroutine executando a cada 5 segundos:
   - Ping no MongoDB (`db.RunCommand({"ping":1})`)
   - Inserção de documento na collection `events`
-- ✅ Expõe métricas Prometheus:
+- Expõe métricas Prometheus:
   - Contador de pings
   - Contador de inserts
   - Histograma de latência
-- ✅ Endpoint `/ping` para health check
-- ✅ Endpoint `/metrics` para Prometheus
-- ✅ Dockerfile multi-stage
+- Endpoint `/ping` para health check
+- Endpoint `/metrics` para Prometheus
+- Dockerfile multi-stage
 
 ### Spring App
 
-- ✅ Java 17 + Spring Boot 3.x
-- ✅ Spring Data MongoDB
-- ✅ Scheduler automático (`@Scheduled`) executando a cada 5 segundos:
+- Java 17 + Spring Boot 3.x
+- Spring Data MongoDB
+- Scheduler automático (`@Scheduled`) executando a cada 5 segundos:
   - Count na collection `events`
   - Inserção de documento
-- ✅ Métricas Micrometer:
+- Métricas Micrometer:
   - Total de operações
   - Velocidade de contagem
   - Latência
-- ✅ Endpoint `/ping` para health check
-- ✅ Endpoint `/actuator/prometheus` para métricas
-- ✅ Dockerfile funcional
+- Endpoint `/ping` para health check
+- Endpoint `/actuator/prometheus` para métricas
+- Dockerfile funcional
 
-## 🐳 Serviços Docker Compose
+## Serviços Docker Compose
 
 1. **MongoDB** - Banco de dados na porta 27017
 2. **Go App** - Aplicação Go na porta 8080
@@ -196,7 +196,7 @@ O arquivo `prometheus/prometheus.yml` configura:
 6. **Prometheus** - Coletor e armazenador de métricas na porta 9090
 7. **Grafana** - Visualização de métricas na porta 3000
 
-## 🔍 Verificando o Funcionamento
+## Verificando o Funcionamento
 
 1. **Verificar aplicações:**
    ```bash
@@ -216,7 +216,7 @@ O arquivo `prometheus/prometheus.yml` configura:
    docker-compose logs -f spring-app
    ```
 
-## 📚 Próximos Passos
+## Próximos Passos
 
 - Criar dashboards personalizados no Grafana
 - Adicionar alertas no Prometheus
@@ -224,7 +224,7 @@ O arquivo `prometheus/prometheus.yml` configura:
 - Adicionar mais métricas customizadas
 - Implementar health checks mais robustos
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Aplicações não conectam ao MongoDB
 
