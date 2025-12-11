@@ -62,7 +62,7 @@ docker-compose down -v
 ### Ferramentas de Monitoramento
 
 - **Prometheus**: http://localhost:9090
-- **Grafana**: http://localhost:3000
+ - **Grafana**: http://localhost:3001
   - Usuário: `admin`
   - Senha: `admin`
 
@@ -102,7 +102,7 @@ docker-compose down -v
 
 ### No Grafana
 
-1. Acesse http://localhost:3000
+1. Acesse http://localhost:3001
 2. Faça login com `admin/admin`
 3. O datasource Prometheus já está configurado automaticamente
 4. **Dashboard pré-configurado**: O dashboard "Monitoring Lab - Go vs Java" já está disponível automaticamente!
@@ -194,7 +194,7 @@ O arquivo `prometheus/prometheus.yml` configura:
 4. **MongoDB Exporter** - Exportador de métricas do MongoDB na porta 9216
 5. **Node Exporter** - Exportador de métricas do sistema na porta 9100
 6. **Prometheus** - Coletor e armazenador de métricas na porta 9090
-7. **Grafana** - Visualização de métricas na porta 3000
+7. **Grafana** - Visualização de métricas na porta 3001
 
 ## Verificando o Funcionamento
 
@@ -243,6 +243,6 @@ Verifique os targets no Prometheus:
 ### Grafana não acessa Prometheus
 
 Verifique se o datasource está configurado:
-- Acesse http://localhost:3000/connections/datasources
+ - Acesse http://localhost:3001/connections/datasources
 - Verifique se o Prometheus está configurado e testado
 
