@@ -163,14 +163,3 @@ Open `http://localhost:9090/targets` and check targets are `UP`.
 - Grafana not connecting to Prometheus:
 
 Open `http://localhost:3000/connections/datasources` and check Prometheus is set up.
-
-Next steps
-
-- Create custom dashboards in Grafana
-- Add Prometheus alerts
-- Add Grafana alerts
-- Add more custom metrics
-
-If you want, I can also:
-- Start the stack and test the services
-- Help make a small quickstart script for Podman
