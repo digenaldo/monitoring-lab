@@ -1,248 +1,176 @@
 # Monitoring Lab
 
-Laboratório completo de monitoramento com aplicações Go e Spring Boot conectadas ao MongoDB, expondo métricas para Prometheus e visualização no Grafana.
+<p align="center"><img src="assets/go-spring-logo.png" width="300" alt="Monitoring Lab logo"></p>
 
-## Estrutura do Projeto
+This project shows a complete monitoring setup with two apps (Go and Spring Boot), MongoDB, Prometheus and Grafana.
+
+Project structure
 
 ```
 /monitoring-lab
-    /go-app              # Aplicação Go
-        main.go
-        go.mod
-        Dockerfile
-    /spring-app          # Aplicação Spring Boot
-        src/main/java/...
-        pom.xml
-        Dockerfile
-    /prometheus          # Configuração do Prometheus
-        prometheus.yml
-    /grafana            # Provisioning do Grafana
-        provisioning/datasources/
+    /go-app              # Go application
+    /spring-app          # Spring Boot application
+    /prometheus          # Prometheus config
+    /grafana             # Grafana provisioning files
     docker-compose.yml
-    README.md
+    README.md            # Portuguese original
+    README.en.md         # This file (English B1)
 ```
 
-## Como Executar
-
-### Pré-requisitos
+Requirements
 
 - Docker
-- Docker Compose
+- Docker Compose or Podman Compose
 
-### Iniciar todos os serviços
+Start all services
+
+Build and start all containers:
 
 ```bash
 docker-compose up --build
 ```
 
-Este comando irá:
-1. Construir as imagens das aplicações Go e Spring Boot
-2. Iniciar todos os serviços (MongoDB, aplicações, Prometheus, Grafana, exporters)
-3. Configurar a rede entre os containers
-
-### Parar os serviços
+Stop services:
 
 ```bash
 docker-compose down
 ```
 
-Para remover também os volumes (dados):
+Remove volumes too:
 
 ```bash
 docker-compose down -v
 ```
 
-## Acessos
+Access links
 
-### Aplicações
+- Go App (health): `http://localhost:8080/ping`
+- Spring App (health): `http://localhost:8081/ping`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000` (user: `admin`, pass: `admin`)
 
-- **Go App**: http://localhost:8080/ping
-- **Spring App**: http://localhost:8081/ping
+Metrics
 
-### Ferramentas de Monitoramento
+Go App (`/metrics`):
+- `mongodb_pings_total` - total ping operations
+- `mongodb_inserts_total` - total insert operations
+- `mongodb_operation_duration_seconds` - operation latencies
 
-- **Prometheus**: http://localhost:9090
- - **Grafana**: http://localhost:3001
-  - Usuário: `admin`
-  - Senha: `admin`
+Spring App (`/actuator/prometheus`):
+- `mongodb_total_operations` - total operations
+- `mongodb_count_velocity` - rate of counts
+- `mongodb_operation_latency` - latencies
 
-## Métricas Expostas
+Other exporters
 
-### Go App (`/metrics`)
+- MongoDB exporter (metrics about MongoDB)
+- Node exporter (system metrics: CPU, memory, disk)
 
-- `mongodb_pings_total` - Total de operações ping realizadas
-- `mongodb_inserts_total` - Total de operações de inserção
-- `mongodb_operation_duration_seconds` - Latência das operações MongoDB
+Open Prometheus
 
-### Spring App (`/actuator/prometheus`)
+1. Go to `http://localhost:9090`
+2. Use the query box, for example:
 
-- `mongodb_total_operations` - Total de operações MongoDB
-- `mongodb_count_velocity` - Velocidade de operações de contagem
-- `mongodb_operation_latency` - Latência das operações MongoDB
-
-### MongoDB Exporter
-
-- Métricas do MongoDB (conexões, operações, performance, etc.)
-
-### Node Exporter
-
-- Métricas do sistema (CPU, memória, disco, rede, etc.)
-
-## Visualizando Métricas
-
-### No Prometheus
-
-1. Acesse http://localhost:9090
-2. Use a interface de query para testar métricas:
-   - `mongodb_pings_total`
-   - `mongodb_inserts_total`
-   - `mongodb_operation_duration_seconds`
-   - `mongodb_total_operations`
-   - `mongodb_operation_latency_seconds`
-
-### No Grafana
-
-1. Acesse http://localhost:3001
-2. Faça login com `admin/admin`
-3. O datasource Prometheus já está configurado automaticamente
-4. **Dashboard pré-configurado**: O dashboard "Monitoring Lab - Go vs Java" já está disponível automaticamente!
-   - Acesse: Dashboards > Monitoring Lab - Go vs Java
-   - O dashboard mostra:
-     - **Parte Superior**: Métricas da aplicação Go (CPU, Memória, Latência MongoDB)
-     - **Parte Inferior**: Métricas da aplicação Java Spring Boot (CPU, Memória, Latência MongoDB)
-     - **Comparações**: Gráficos comparativos de latência e memória entre Go e Java
-
-#### Exemplo de Queries para Dashboard
-
-**Taxa de pings por segundo (Go App):**
 ```
 rate(mongodb_pings_total[1m])
 ```
 
-**Taxa de inserts por segundo (Go App):**
+Open Grafana
+
+1. Go to `http://localhost:3000`
+2. Login with `admin/admin`
+3. The Prometheus data source is already configured
+4. A dashboard called "Monitoring Lab - Go vs Java" is available
+
+Example queries for the dashboard
+
+- Go pings per second:
+
+```
+rate(mongodb_pings_total[1m])
+```
+
+- Go inserts per second:
+
 ```
 rate(mongodb_inserts_total[1m])
 ```
 
-**Latência média (Go App):**
+- Go average latency:
+
 ```
 rate(mongodb_operation_duration_seconds_sum[1m]) / rate(mongodb_operation_duration_seconds_count[1m])
 ```
 
-**Total de operações (Spring App):**
+- Java total operations:
+
 ```
 mongodb_total_operations
 ```
 
-**Latência (Spring App):**
+Configuration notes
+
+- Go app: `MONGO_URI` (default `mongodb://mongo:27017`)
+- Spring app: `SPRING_DATA_MONGODB_URI` (default `mongodb://mongo:27017/monitoring`)
+- Prometheus config file: `prometheus/prometheus.yml` (scrape interval 5s and targets)
+
+Services in docker-compose
+
+1. MongoDB - port `27017`
+2. Go App - port `8080`
+3. Spring App - port `8081`
+4. MongoDB Exporter - port `9216`
+5. Node Exporter - port `9100`
+6. Prometheus - port `9090`
+7. Grafana - port `3000`
+
+Quick checks
+
+1. Application health:
+
+```bash
+curl http://localhost:8080/ping
+curl http://localhost:8081/ping
 ```
-mongodb_operation_latency_seconds
+
+2. Metrics:
+
+```bash
+curl http://localhost:8080/metrics
+curl http://localhost:8081/actuator/prometheus
 ```
 
-## Configurações
+3. Logs while running:
 
-### Variáveis de Ambiente
+```bash
+docker-compose logs -f go-app
+docker-compose logs -f spring-app
+```
 
-**Go App:**
-- `MONGO_URI`: URI de conexão MongoDB (padrão: `mongodb://mongo:27017`)
+Troubleshooting
 
-**Spring App:**
-- `SPRING_DATA_MONGODB_URI`: URI de conexão MongoDB (padrão: `mongodb://mongo:27017/monitoring`)
+- Apps not connecting to MongoDB:
 
-### Prometheus
-
-O arquivo `prometheus/prometheus.yml` configura:
-- Intervalo de scrape: 5 segundos
-- Targets: go-app, spring-app, mongodb-exporter, node-exporter
-
-## Funcionalidades
-
-### Go App
-
-- Conecta ao MongoDB usando mongo-driver
-- Loop infinito em goroutine executando a cada 5 segundos:
-  - Ping no MongoDB (`db.RunCommand({"ping":1})`)
-  - Inserção de documento na collection `events`
-- Expõe métricas Prometheus:
-  - Contador de pings
-  - Contador de inserts
-  - Histograma de latência
-- Endpoint `/ping` para health check
-- Endpoint `/metrics` para Prometheus
-- Dockerfile multi-stage
-
-### Spring App
-
-- Java 17 + Spring Boot 3.x
-- Spring Data MongoDB
-- Scheduler automático (`@Scheduled`) executando a cada 5 segundos:
-  - Count na collection `events`
-  - Inserção de documento
-- Métricas Micrometer:
-  - Total de operações
-  - Velocidade de contagem
-  - Latência
-- Endpoint `/ping` para health check
-- Endpoint `/actuator/prometheus` para métricas
-- Dockerfile funcional
-
-## Serviços Docker Compose
-
-1. **MongoDB** - Banco de dados na porta 27017
-2. **Go App** - Aplicação Go na porta 8080
-3. **Spring App** - Aplicação Spring Boot na porta 8081
-4. **MongoDB Exporter** - Exportador de métricas do MongoDB na porta 9216
-5. **Node Exporter** - Exportador de métricas do sistema na porta 9100
-6. **Prometheus** - Coletor e armazenador de métricas na porta 9090
-7. **Grafana** - Visualização de métricas na porta 3001
-
-## Verificando o Funcionamento
-
-1. **Verificar aplicações:**
-   ```bash
-   curl http://localhost:8080/ping  # Go App
-   curl http://localhost:8081/ping  # Spring App
-   ```
-
-2. **Verificar métricas:**
-   ```bash
-   curl http://localhost:8080/metrics  # Go App
-   curl http://localhost:8081/actuator/prometheus  # Spring App
-   ```
-
-3. **Verificar logs:**
-   ```bash
-   docker-compose logs -f go-app
-   docker-compose logs -f spring-app
-   ```
-
-## Próximos Passos
-
-- Criar dashboards personalizados no Grafana
-- Adicionar alertas no Prometheus
-- Configurar alertas no Grafana
-- Adicionar mais métricas customizadas
-- Implementar health checks mais robustos
-
-## Troubleshooting
-
-### Aplicações não conectam ao MongoDB
-
-Verifique se o MongoDB está saudável:
 ```bash
 docker-compose ps mongo
 docker-compose logs mongo
 ```
 
-### Prometheus não coleta métricas
+- Prometheus not scraping:
 
-Verifique os targets no Prometheus:
-- Acesse http://localhost:9090/targets
-- Verifique se todos os targets estão "UP"
+Open `http://localhost:9090/targets` and check targets are `UP`.
 
-### Grafana não acessa Prometheus
+- Grafana not connecting to Prometheus:
 
-Verifique se o datasource está configurado:
- - Acesse http://localhost:3001/connections/datasources
-- Verifique se o Prometheus está configurado e testado
+Open `http://localhost:3000/connections/datasources` and check Prometheus is set up.
 
+Next steps
+
+- Create custom dashboards in Grafana
+- Add Prometheus alerts
+- Add Grafana alerts
+- Add more custom metrics
+
+If you want, I can also:
+- Start the stack and test the services
+- Help make a small quickstart script for Podman
